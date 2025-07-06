@@ -19,7 +19,7 @@ export default function LoginPage() {
       localStorage.setItem('token', res.data.token);
       toast.success('Login successful!');
       router.push('/menu');
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       toast.error(err?.response?.data || 'Login failed');
     }
