@@ -45,7 +45,7 @@ export default function MenuTable({ items, setMenu }: Props) {
         toast.success('Item updated!');
       } else {
         // Add new item
-        const res = await API.post('/menu', data);
+        await API.post('/menu', data);
         // Optionally fetch again or just append
         setMenu(menu => [...menu, { ...data, id: Math.random(), createdAt: new Date().toISOString() }]);
         toast.success('Item added!');
