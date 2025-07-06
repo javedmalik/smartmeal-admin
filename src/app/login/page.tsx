@@ -5,12 +5,21 @@ import { useRouter } from 'next/navigation';
 import API from '@/lib/api';
 import { toast } from 'react-toastify';
 
+function isApiError(error: unknown): error is { response: { data: string } } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof (error as { response: unknown }).response === 'object' &&
+    (error as { response: { data: unknown } }).response !== null &&
+    'data' in (error as { response: { data: unknown } }).response
+  );
+}
+
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-
-  console.log('APIURL: ', API);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,17 +29,9 @@ export default function LoginPage() {
       toast.success('Login successful!');
       router.push('/menu');
     } catch (err) {
-      // Safely extract error message regardless of error type
       let errorMsg = 'Login failed';
-      // If error is an Axios error
-      if (
-        err &&
-        typeof err === 'object' &&
-        'response' in err &&
-        (err as any).response &&
-        (err as any).response.data
-      ) {
-        errorMsg = (err as any).response.data;
+      if (isApiError(err)) {
+        errorMsg = err.response.data || errorMsg;
       } else if (err instanceof Error) {
         errorMsg = err.message;
       }
