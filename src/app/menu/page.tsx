@@ -25,7 +25,7 @@ export default function MenuPage() {
       try {
         const res = await API.get('/menu');
         setMenu(res.data);
-      } catch (err: any) {
+      } catch (err) {
         if (err?.response?.status === 401) {
           router.push('/login');
         }
