@@ -19,15 +19,23 @@ export default function LoginPage() {
       localStorage.setItem('token', res.data.token);
       toast.success('Login successful!');
       router.push('/menu');
-    catch (err) {
-  let errorMsg = 'Login failed';
-  if (err && typeof err === 'object' && 'response' in err) {
-    errorMsg = (err as AxiosError<{ message: string }>).response?.data?.message || errorMsg;
-  } else if (err instanceof Error) {
-    errorMsg = err.message;
-  }
-  toast.error(errorMsg);
-}
+    } catch (err) {
+      // Safely extract error message regardless of error type
+      let errorMsg = 'Login failed';
+      // If error is an Axios error
+      if (
+        err &&
+        typeof err === 'object' &&
+        'response' in err &&
+        (err as any).response &&
+        (err as any).response.data
+      ) {
+        errorMsg = (err as any).response.data;
+      } else if (err instanceof Error) {
+        errorMsg = err.message;
+      }
+      toast.error(errorMsg);
+    }
   };
 
   return (
