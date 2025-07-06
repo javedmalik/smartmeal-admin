@@ -19,10 +19,15 @@ export default function LoginPage() {
       localStorage.setItem('token', res.data.token);
       toast.success('Login successful!');
       router.push('/menu');
-    } catch (err) {
-      console.error(err);
-      toast.error(err?.response?.data || 'Login failed');
-    }
+    catch (err) {
+  let errorMsg = 'Login failed';
+  if (err && typeof err === 'object' && 'response' in err) {
+    errorMsg = (err as AxiosError<{ message: string }>).response?.data?.message || errorMsg;
+  } else if (err instanceof Error) {
+    errorMsg = err.message;
+  }
+  toast.error(errorMsg);
+}
   };
 
   return (
